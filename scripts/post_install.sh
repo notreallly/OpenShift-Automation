@@ -41,7 +41,7 @@ approve_csr(){
 
   TARGET_READY_COUNT=${TOTAL_NODE_NUMBER}
   CHECK_INTERVAL=$((5 * 60)) # 每 5 分鐘檢查一次
-  MAX_WAIT_SECONDS=$((30 * 60)) # 最長等待 30 分鐘
+  MAX_WAIT_SECONDS=$((40 * 60)) # 最長等待 40 分鐘
   START_TIME=$(date +%s)
 
   while true; do
@@ -61,17 +61,21 @@ approve_csr(){
         break
     fi
 
-    # 檢查 cluster operator
+    # 執行 CSR 核准
+    oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' \
+            | xargs -r oc adm certificate approve
+    
+    sleep $CHECK_INTERVAL
+  done
+
+  # 檢查 cluster operator
+  while true; do
     CO_READY=$(oc get co | awk 'BEGIN{ok=1} NR>1{if(!($3=="True"&&$4=="False"&&$5=="False")) ok=0} END{if(ok) print "OK"}')
     if [ "OK" == $CO_READY ]; then
       echo -e "$(date): \e[32mINFO\e[0m：所有 Cluster Operator 就緒"
       break
     fi
-    
-    # 執行 CSR 核准
-    oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' \
-            | xargs -r oc adm certificate approve
-    
+
     sleep $CHECK_INTERVAL
   done
 
