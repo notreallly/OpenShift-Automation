@@ -60,6 +60,13 @@ approve_csr(){
         echo -e "$(date): \e[32mINFO\e[0m：所有節點就緒"
         break
     fi
+
+    # 檢查 cluster operator
+    CO_READY=$(oc get co | awk 'BEGIN{ok=1} NR>1{if(!($3=="True"&&$4=="False"&&$5=="False")) ok=0} END{if(ok) print "OK"}')
+    if [ "OK" == $CO_READY ]; then
+      echo -e "$(date): \e[32mINFO\e[0m：所有 Cluster Operator 就緒"
+      break
+    fi
     
     # 執行 CSR 核准
     oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' \
