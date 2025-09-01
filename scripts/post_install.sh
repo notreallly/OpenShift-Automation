@@ -151,6 +151,14 @@ csi_installation(){
     trident)
       export STORAGE_CLASS_NAME=${TRIDENT_STORAGE_CLASS_NAME}
       export STORAGE_NAMESPACE=${TRIDENT_NAMESPACE}
+      export BACKEND_TYPE=${BACKEND_TYPE}
+      export BACKEND_NAME=${BACKEND_NAME}
+      export STORAGE_DRIVER_NAME=${STORAGE_DRIVER_NAME}
+      export MANAGEMENT_LIF=${MANAGEMENT_LIF}
+      export DATA_LIF=${DATA_LIF}
+      export SVM=${SVM}
+      export ONTAP_USERNAME=${ONTAP_USERNAME}
+      export ONTAP_PASSWORD=${ONTAP_PASSWORD}
       trident
       ;;
     *)

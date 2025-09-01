@@ -95,7 +95,7 @@ trident(){
   chmod a+x /usr/bin/tridentctl
 
   # 創建 trident backend
-  tridentctl create backend -f ${YAML_DIR}/${CSI_MODULE}/backend.json -n ${STORAGE_NAMESPACE}
+  envsubst < ${YAML_DIR}/${CSI_MODULE}/backend.json |tridentctl create backend -n ${STORAGE_NAMESPACE} -f - 
 
   # 創建 StorageClass
   envsubst < ${YAML_DIR}/${CSI_MODULE}/storageclass.yaml |oc apply -f -
