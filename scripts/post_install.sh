@@ -20,24 +20,38 @@ while IFS= read -r line || [[ -n "$line" ]]; do
   declare -- "$key=$value"
 done < "$config_file"
 
+export KUBECONFIG="/root/ocp4/auth/kubeconfig"
+export YAML_DIR="/root/OpenShift-Automation/yaml"
+
 echo -e "[$(date)] \e[32mINFO\e[0m：post_install.conf 配置檔確認完畢，開始執行 post_install.sh"
 
 # 主程式
 main(){
-  approve_csr
-  mirror_source_config
-  ocp_authentication
-  csi_installation
-  infra_node_setup
-  create_gitea
+  # 先不破壞既有的做法
+  if [ "$1" = "" ]; then
+    approve_csr
+    mirror_source_config
+    ocp_authentication
+    csi_installation
+    infra_node_setup
+    create_gitea
+  fi
+
+  if [ "$1" = "wait-complete" ]; then
+    approve_csr
+    mirror_source_config
+    ocp_authentication
+  elif [ "$1" = "install-csi" ]; then
+    csi_installation
+  elif [ "$1" = "post-configure" ]; then
+    infra_node_setup
+    create_gitea
+  fi
 }
 
 # 驗證通過 CSR
 approve_csr(){
   echo -e "[$(date)] \e[32mINFO\e[0m：開始執行 approve_csr..."
-
-  export KUBECONFIG=/root/ocp4/auth/kubeconfig
-  export YAML_DIR="/root/OpenShift-Automation/yaml"
 
   TARGET_READY_COUNT=${TOTAL_NODE_NUMBER}
   CHECK_INTERVAL=$((5 * 60)) # 每 5 分鐘檢查一次
@@ -69,6 +83,7 @@ approve_csr(){
   done
 
   # 檢查 cluster operator
+  # TODO 加上超時設定與 echo 訊息
   while true; do
     CO_READY=$(oc get co | awk 'BEGIN{ok=1} NR>1{if(!($3=="True"&&$4=="False"&&$5=="False")) ok=0} END{if(ok) print "OK"}')
     if [ "OK" == $CO_READY ]; then
@@ -265,4 +280,4 @@ create_gitea(){
   echo -e "[$(date)] \e[32mINFO\e[0m：post_install 腳本執行完成，GITEA 已建立，請執行帳號登錄"
 }
 
-main
+main $1
