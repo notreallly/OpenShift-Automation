@@ -9,15 +9,15 @@ mirror:
     channels:
       - name: stable-4.18
         minVersion: 4.18.22
-        maxVersion: 4.18.22
+        maxVersion: 4.18.23
   operators:
     - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.18
       packages:
         - name: kubevirt-hyperconverged
           channels:
             - name: stable
-              minVersion: 4.18.14
-              maxVersion: 4.18.14
+              minVersion: 4.18.13
+              maxVersion: 4.18.13
         - name: mtv-operator
           channels:
             - name: release-v2.8
@@ -110,6 +110,6 @@ mirror:
     - name: quay.io/containerdisks/centos-stream:9
     - name: quay.io/rhtw/postgres:17.5
     - name: quay.io/rhtw/gitea:1.21.7
-    - name: quay.io/minio/minio:latest
+    - name: quay.io/rhtw/minio:latest
     - name: quay.io/rhtw/tools
     - name: quay.io/rhtw/gitops-envsub
