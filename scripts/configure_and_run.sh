@@ -5,7 +5,7 @@ unset $1
 
 
 # 設定參數（可以在執行腳本時傳入）
-export RHEL_MINOR_VERSION="${1:-9.4}"
+export RHEL_MINOR_VERSION="${1:-9.6}"
 export TARBALL_PATH="/root/install_source/ansible-navigator-rpm-${RHEL_MINOR_VERSION}.tar"
 export TAR_DEST_PATH="/root/install_source/ansible-navigator-rpm-${RHEL_MINOR_VERSION}"
 export EE_IMAGE_TAR="/root/install_source/eeimage-v1.tar"
