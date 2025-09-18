@@ -95,6 +95,8 @@ trident(){
   chmod a+x /usr/bin/tridentctl
 
   # 創建 trident backend
+  # TODO 缺檢查機制，目前先 sleep 硬解
+  sleep 180s
   envsubst < ${YAML_DIR}/${CSI_MODULE}/backend.json |tridentctl create backend -n ${STORAGE_NAMESPACE} -f - 
 
   # 創建 StorageClass
